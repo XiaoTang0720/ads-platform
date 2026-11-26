@@ -219,3 +219,6 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 .idea/
+
+# Synthetic data answer key: keep on disk, out of git
+data/synthetic/anomalies.json

@@ -26,3 +26,23 @@ uvicorn app.main:app --reload --host 127.0.0.1
 ```
 
 The database listens on `127.0.0.1:5432` only.
+
+## Synthetic data
+
+`data/synthetic/generate.py` fills the tables with fake ads data: 50 campaigns, 30 days of metrics, and 3 planted ROAS drops from day 20. It is deterministic for a given seed.
+
+```
+python -m data.synthetic.generate --seed 42            # first run
+python -m data.synthetic.generate --seed 42 --reset    # start over (dev DB only)
+```
+
+Without `--reset`, the script stops if data already exists. The answer key is written to `data/synthetic/anomalies.json`, which git ignores.
+
+Find the drops:
+
+```
+docker exec -i ads-platform-db-1 psql -U ads < sql/roas_drops.sql
+docker exec -i ads-platform-db-1 psql -U ads < sql/drop_causes.sql
+```
+
+Tests: `python -m pytest tests/test_synthetic.py -v`
